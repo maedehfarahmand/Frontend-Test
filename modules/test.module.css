@@ -1,21 +1,13 @@
-/* ===== GLOBAL OVERFLOW FIX ===== */
-/* Prevent any element from causing horizontal scroll on the page */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  max-width: 100%;
-}
-
 /* ===== RESET & BASE ===== */
 .container {
   min-height: 100vh;
   width: 100%;
-  /* Clip anything that would spill outside the viewport horizontally */
+  /* Clip anything that spills outside the viewport horizontally */
   overflow-x: hidden;
   background-color: #f5f4f0;
   font-family: 'Georgia', 'Times New Roman', serif;
   padding: 2rem 1rem;
+  box-sizing: border-box;
 }
 
 /* ===== HEADER ===== */
@@ -23,13 +15,13 @@
   width: 100%;
   max-width: 680px;
   margin: 0 auto 2.5rem auto;
-  /* Prevent long words in the heading from overflowing */
   overflow-wrap: break-word;
   word-break: break-word;
+  box-sizing: border-box;
 }
 
 .header h1 {
-  /* clamp() scales the font between 1.5rem and 2.4rem based on viewport */
+  /* clamp() scales font size smoothly across screen widths */
   font-size: clamp(1.5rem, 5vw, 2.4rem);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -53,9 +45,10 @@
   background: #ffffff;
   border: 1.5px solid #e0ddd6;
   border-radius: 12px;
-  /* overflow:hidden clips any child content that overflows the card */
+  /* Clips any child content that overflows the card edges */
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  box-sizing: border-box;
 }
 
 /* ===== FORM SECTION ===== */
@@ -64,21 +57,22 @@
   padding: 1.75rem;
   border-bottom: 1.5px solid #e0ddd6;
   background: #fafaf8;
+  box-sizing: border-box;
 }
 
 .formRow {
   display: flex;
   gap: 0.75rem;
   align-items: flex-start;
-  /* Always wrap so children never exceed card width */
+  /* Always wrap so children never exceed the card width */
   flex-wrap: wrap;
   width: 100%;
 }
 
 .titleWrapper {
-  /* flex:1 1 0 with min-width:0 is critical —
-     without min-width:0, flex children refuse to shrink
-     below their content size, causing overflow */
+  /* flex:1 1 0 + min-width:0 is the key fix —
+     without min-width:0, flex items refuse to shrink
+     below their content size, which causes overflow */
   flex: 1 1 0;
   min-width: 0;
   display: flex;
@@ -87,7 +81,6 @@
 }
 
 .input {
-  /* width:100% ensures it fills its flex parent, never wider */
   width: 100%;
   min-width: 0;
   padding: 0.65rem 0.9rem;
@@ -99,6 +92,7 @@
   color: #1a1a1a;
   outline: none;
   transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -118,7 +112,6 @@
   color: #c0392b;
   font-style: italic;
   margin: 0;
-  /* Wrap long error text rather than overflowing */
   overflow-wrap: break-word;
 }
 
@@ -135,6 +128,7 @@
   cursor: pointer;
   transition: border-color 0.15s;
   height: 42px;
+  box-sizing: border-box;
 }
 
 .select:focus {
@@ -152,10 +146,11 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  /* white-space:nowrap stops button text from wrapping mid-word */
+  /* Prevents button label from wrapping onto two lines */
   white-space: nowrap;
   transition: background 0.15s, transform 0.1s;
   height: 42px;
+  box-sizing: border-box;
 }
 
 .addBtn:hover {
@@ -176,10 +171,11 @@
   align-items: center;
   flex-wrap: wrap;
   background: #fff;
+  box-sizing: border-box;
 }
 
 .searchInput {
-  /* flex:1 1 120px — grows to fill available space, shrinks, never below 120px */
+  /* Grows to fill space, shrinks, but never below 120px */
   flex: 1 1 120px;
   min-width: 0;
   padding: 0.5rem 0.85rem;
@@ -191,7 +187,7 @@
   color: #1a1a1a;
   outline: none;
   transition: border-color 0.15s;
-  width: 100%;
+  box-sizing: border-box;
 }
 
 .searchInput:focus {
@@ -205,7 +201,7 @@
 .filters {
   display: flex;
   gap: 0.35rem;
-  /* Allow filter buttons to wrap if space is tight */
+  /* Allow buttons to wrap onto a second line if needed */
   flex-wrap: wrap;
 }
 
@@ -221,6 +217,7 @@
   transition: all 0.15s;
   white-space: nowrap;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .filterBtn:hover {
@@ -258,9 +255,9 @@
   padding: 1rem 1.75rem;
   border-bottom: 1px solid #ebe8e2;
   transition: background 0.12s;
-  /* Clip overflow within the row itself */
   overflow: hidden;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .taskItem:last-child {
@@ -280,7 +277,7 @@
 .checkbox {
   width: 18px;
   height: 18px;
-  /* flex-shrink:0 prevents the checkbox from being squashed */
+  /* Prevents checkbox from being squashed by long titles */
   flex-shrink: 0;
   accent-color: #1a1a1a;
   cursor: pointer;
@@ -288,8 +285,8 @@
 }
 
 /* Task body
-   min-width:0 is THE critical fix for flex overflow:
-   without it, a long title pushes Delete/Edit buttons off screen */
+   min-width:0 is critical — without it a long task title
+   pushes the Edit/Delete buttons off the right edge of the screen */
 .taskBody {
   flex: 1 1 0;
   min-width: 0;
@@ -300,7 +297,7 @@
   font-size: 0.95rem;
   color: #1a1a1a;
   margin: 0 0 0.3rem 0;
-  /* Both properties are needed for cross-browser long-word wrapping */
+  /* Both needed for cross-browser long-word wrapping */
   word-break: break-word;
   overflow-wrap: break-word;
   line-height: 1.4;
@@ -364,6 +361,7 @@
   border: 1.5px solid #c0392b;
   border-radius: 6px;
   outline: none;
+  box-sizing: border-box;
 }
 
 .editSelect {
@@ -375,6 +373,7 @@
   border-radius: 6px;
   outline: none;
   background: #fff;
+  box-sizing: border-box;
 }
 
 .editSaveBtn {
@@ -408,7 +407,7 @@
 .taskActions {
   display: flex;
   gap: 0.35rem;
-  /* Never shrink — buttons must always be fully visible and tappable */
+  /* Never shrink — buttons must always be fully visible */
   flex-shrink: 0;
   margin-top: 1px;
   align-items: flex-start;
@@ -425,6 +424,7 @@
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .editBtn:hover {
@@ -443,6 +443,7 @@
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .deleteBtn:hover {
@@ -460,6 +461,7 @@
   color: #999;
   font-style: italic;
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* ===== RESPONSIVE — MOBILE (< 768px) ===== */
@@ -476,13 +478,13 @@
     padding: 1rem;
   }
 
-  /* Stack all form controls vertically on mobile */
+  /* Stack all form controls vertically — nothing can overflow */
   .formRow {
     flex-direction: column;
     gap: 0.6rem;
   }
 
-  /* Every form control is full width on mobile — no overflow possible */
+  /* Full width on mobile so inputs never overflow the viewport */
   .titleWrapper,
   .select,
   .addBtn {
@@ -497,7 +499,6 @@
 
   .addBtn {
     height: 44px;
-    /* Larger tap target for mobile */
   }
 
   .controlsSection {
@@ -522,7 +523,7 @@
     gap: 0.6rem;
   }
 
-  /* Stack Edit/Delete vertically so they don't overflow on narrow screens */
+  /* Stack Edit/Delete vertically on narrow screens */
   .taskActions {
     flex-direction: column;
     gap: 0.3rem;
